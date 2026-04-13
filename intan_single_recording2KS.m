@@ -1,12 +1,13 @@
-%% kilosort pipeline
+%% convert a single intan recording to KS binary format
 
 clear;
 close all;
 clc;
 
-%% load data
+%% set path
 
 Epth = '/Volumes/homes/Caras Lab/RIG3_Backup_2025/intan_files/Data/SUBJ-ID-1154/SUBJ-ID-1154_shaping_260408_100339';
+outDir = %path here;
 
 %% load data
 
@@ -32,10 +33,14 @@ ephys_size = size(data_int16, 2); % how many channels
 %% write file
 
 
-%parse subj-id and session
+[~, sessionName] = fileparts(Epth);
 
-fid = fopen('combined.dat','w');
-fwrite(fid, data_int16', 'int16');  
+outFile = [sessionName '.dat'];
+
+outFile = fullfile(outDir, [sessionName '.dat']);
+
+fid = fopen(outFile,'w');
+fwrite(fid, data_int16', 'int16');
 fclose(fid);
 
 %% run kilosort 
