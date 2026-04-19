@@ -7,7 +7,7 @@ def run_one_recording(dat_path: Path, output_dir: Path, probe_path: Path, fs: in
     output_dir.mkdir(parents=True, exist_ok=True)
 
     settings = {
-        "filename": str(dat_path.resolve()),  # 🔥 FIX
+        "filename": str(dat_path.resolve()),  
         "results_dir": str(output_dir),
         "probe_path": str(probe_path),
         "fs": fs,
