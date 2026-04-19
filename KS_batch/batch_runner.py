@@ -22,7 +22,7 @@ def main():
      raise FileNotFoundError(f"DATA_ROOT does not exist {data_root}")
      
      if not probe_path.exists():
-        raise FileNotFoundError(f"PROBE_PATH does not exist {probe_path}")
+      raise FileNotFoundError(f"PROBE_PATH does not exist {probe_path}")
      
      dat_files = find_data_files(data_root)
      print(f"Found {len(data_files)} .dat files to process.\n")
@@ -38,7 +38,7 @@ def main():
         relative = dat.relative_to(data_root)
      except ValueError:
         print(f"Skipping file outside DATA_ROOT: {dat}")
-        continue
+   
         
     output_dir = (output_root / relative.parent / "kilosort4").resolve()
     
@@ -58,9 +58,9 @@ def main():
     except Exception as e:
         print(f"\n Failed on {dat,name}")
         print(f"Error: {e}")
-        continue
+        
         
 print("\n Batch processing complete.\n")
 
-if __name___ == "__main__":
+if __name__ == "__main__":
     main()
