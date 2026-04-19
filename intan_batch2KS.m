@@ -5,12 +5,11 @@ clc;
 
 %% path
 
-Edir = '/Volumes/homes/Caras Lab/RIG3_Backup_2025/intan_files/Data/SUBJ-ID-1154';
-outputdir = '/Users/marissarenee/Desktop/test';
+Edir = '/mnt/CL_8TB_4/temp_tank/SUBJ-ID-1026'; 
+outputdir = '/mnt/CL_8TB_4/Marissa/Aversive AM Laminar Ephys/ephys dat files/SUBJ-ID-1026';
 
 %% load data
 
-% list all folders
 d = dir(Edir);
 d = d([d.isdir]);
 d = d(~ismember({d.name},{'.','..'}));

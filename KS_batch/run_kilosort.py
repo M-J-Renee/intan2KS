@@ -2,7 +2,7 @@ from pathlib import Path
 from kilosort import run_kilosort
 
 
-def run_one_recording(dat_path: Path, output_dir: Path, probe_path: Path, fs: int = 30000):
+def run_one_recording(dat_path: Path, output_dir: Path, probe_path: Path, fs: int = 25000):
     """
     Run Kilosort4 on a single .dat file.
     """
@@ -18,7 +18,7 @@ def run_one_recording(dat_path: Path, output_dir: Path, probe_path: Path, fs: in
         "fs": fs,
 
         # IMPORTANT: adjust later if needed
-        "n_chan_bin": 32,
+        "n_chan_bin": 16,
     }
 
     print("\n==============================")
