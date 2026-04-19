@@ -34,13 +34,12 @@ def main():
      for dat in data_files:
         dat = dat.resolve()
      
-     try:
-        relative = dat.relative_to(data_root)
-     except ValueError:
-        print(f"Skipping file outside DATA_ROOT: {dat}")
-   
-        
-         output_dir = (output_root / relative.parent / "kilosort4").resolve()
+         try:
+            relative = dat.relative_to(data_root)
+            except ValueError:
+            print(f"Skipping file outside DATA_ROOT: {dat}")
+
+            output_dir = (output_root / relative.parent / "kilosort4").resolve()
     
     print("\n--------")
     print(f"Running Kilosort4 on: {dat.name}")
@@ -48,16 +47,16 @@ def main():
     print(f"Output dir: {output_dir}")
     print("----------")
     
-    try:
-        run_one_recording(
+         try:
+            run_one_recording(
             dat_path=dat,
             output_dir=output_dir,
             probe_path=probe_path,
             fs=25000,
             )
-    except Exception as e:
-        print(f"\n Failed on {dat,name}")
-        print(f"Error: {e}")
+            except Exception as e:
+            print(f"\n Failed on {dat.name}")
+            print(f"Error: {e}")
         
         
 print("\n Batch processing complete.\n")
