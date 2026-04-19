@@ -9,7 +9,7 @@ def find_dat_files(root: Path):
 def main():
     data_root = Path(DATA_ROOT).resolve()
     output_root = Path(OUTPUT_ROOT).resolve()
-    probe_path = path(PROBE_PATH).resolve()
+    probe_path = Path(PROBE_PATH).resolve()
     
     print("\n==========")
     print("Kilosort4 Batch Runner")
