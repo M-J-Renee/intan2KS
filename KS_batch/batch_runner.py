@@ -41,7 +41,7 @@ def main():
             print(f"Skipping file outside DATA_ROOT: {dat}")
             continue
 
-        output_dir = (output_root / relative.parent / "kilosort4").resolve()
+        output_dir = (output_root / relative.parent / "kilosort4" / dat.stem).resolve()
 
         print("\n--------")
         print(f"Running Kilosort4 on: {dat.name}")
