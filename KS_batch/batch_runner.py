@@ -74,17 +74,49 @@ def group_sessions(dat_files):
 
 
 def concatenate_dat_files(dat_group, concat_path):
+    import json
+    import shutil
 
     concat_path.parent.mkdir(parents=True, exist_ok=True)
 
     print(f"\nCreating concatenated file:\n{concat_path}")
 
+    metadata = {
+        "files": [],
+        "start_datetimes": [],
+        "sample_offsets": []
+    }
+
+    offset = 0
+
     with open(concat_path, "wb") as wfd:
+
         for dat in dat_group:
+
+            dt = extract_datetime_from_name(dat)
+
             print(f"  Adding {dat.name}")
+
+            # Estimate samples (assumes int16, 32 channels)
+            n_bytes = dat.stat().st_size
+            n_samples = n_bytes // (2 * 32)
+
+            metadata["files"].append(str(dat))
+            metadata["start_datetimes"].append(dt.isoformat())
+            metadata["sample_offsets"].append(offset)
+
             with open(dat, "rb") as fd:
                 shutil.copyfileobj(fd, wfd)
 
+            offset += n_samples
+
+    # Save metadata next to concat file
+    meta_path = concat_path.with_suffix(".json")
+
+    with open(meta_path, "w") as f:
+        json.dump(metadata, f, indent=2)
+
+    print(f"\nSaved metadata: {meta_path}")
 
 
 def main():
