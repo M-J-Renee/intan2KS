@@ -45,6 +45,9 @@ for i = 1:length(d)
         data_int16 = data_int16(:, chan_order);
 
         % write file
+        if ~exist(outputdir, 'dir')
+            mkdir(outputdir);
+        end
         outFile = fullfile(outputdir, [sessionName '.dat']);
 
         fid = fopen(outFile,'w');
