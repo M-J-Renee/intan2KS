@@ -3,9 +3,17 @@ from config import DATA_ROOT, OUTPUT_ROOT, PROBE_PATH
 from run_kilosort import run_one_recording
 from datetime import datetime, timedelta
 import shutil
+import numpy as np
+import scipy.io
 
 
 TWO_HOURS = timedelta(hours=2)
+
+
+def load_meta(dat_path: Path) -> dict:
+    """Load _meta.mat saved alongside a .dat file."""
+    meta_path = dat_path.with_name(dat_path.stem + '_meta.mat')
+    return scipy.io.loadmat(str(meta_path), simplify_cells=True)
 
 
 
@@ -73,50 +81,72 @@ def group_sessions(dat_files):
     return sessions
 
 
-def concatenate_dat_files(dat_group, concat_path):
+def concatenate_dat_files(dat_group, concat_path, metas):
     import json
-    import shutil
 
     concat_path.parent.mkdir(parents=True, exist_ok=True)
 
     print(f"\nCreating concatenated file:\n{concat_path}")
 
+    fs = int(metas[0]['fs'])
+    n_channels = int(metas[0]['n_channels'])
+
     metadata = {
         "files": [],
         "start_datetimes": [],
-        "sample_offsets": []
+        "sample_offsets": [],
+        "fs": fs,
+        "n_channels": n_channels,
     }
 
-    offset = 0
+    sample_offset = 0
+    combined_events = {}
 
     with open(concat_path, "wb") as wfd:
 
-        for dat in dat_group:
+        for dat, meta in zip(dat_group, metas):
 
             dt = extract_datetime_from_name(dat)
 
             print(f"  Adding {dat.name}")
 
-            # Estimate samples (assumes int16, 32 channels)
             n_bytes = dat.stat().st_size
-            n_samples = n_bytes // (2 * 32)
+            n_samples = n_bytes // (2 * n_channels)
 
             metadata["files"].append(str(dat))
             metadata["start_datetimes"].append(dt.isoformat())
-            metadata["sample_offsets"].append(offset)
+            metadata["sample_offsets"].append(sample_offset)
+
+            # Shift this recording's events by its start time in the concat file
+            offset_sec = sample_offset / fs
+            for ch, timestamps in meta['events'].items():
+                shifted = np.array(timestamps, dtype=float) + offset_sec
+                if ch not in combined_events:
+                    combined_events[ch] = []
+                combined_events[ch].append(shifted)
 
             with open(dat, "rb") as fd:
                 shutil.copyfileobj(fd, wfd)
 
-            offset += n_samples
+            sample_offset += n_samples
 
-    # Save metadata next to concat file
+    for ch in combined_events:
+        combined_events[ch] = np.vstack(combined_events[ch])
+
+    # Save JSON manifest
     meta_path = concat_path.with_suffix(".json")
-
     with open(meta_path, "w") as f:
         json.dump(metadata, f, indent=2)
+    print(f"Saved manifest: {meta_path}")
 
-    print(f"\nSaved metadata: {meta_path}")
+    # Save combined events as .mat alongside the concat .dat
+    concat_meta_path = concat_path.with_name(concat_path.stem + '_meta.mat')
+    scipy.io.savemat(str(concat_meta_path), {
+        'events': combined_events,
+        'fs': fs,
+        'n_channels': n_channels,
+    })
+    print(f"Saved combined events: {concat_meta_path}")
 
 
 def main():
@@ -156,6 +186,10 @@ def main():
         subject = extract_subject_from_name(group[0])
         date_str = first_dt.strftime("%y%m%d")
 
+        metas = [load_meta(dat) for dat in group]
+        fs = int(metas[0]['fs'])
+        n_channels = int(metas[0]['n_channels'])
+
         # -------------------------
         # SINGLE FILE SESSION
         # -------------------------
@@ -176,7 +210,7 @@ def main():
             dat_path = concat_dir / f"{session_name}.dat"
 
             if not dat_path.exists():
-                concatenate_dat_files(group, dat_path)
+                concatenate_dat_files(group, dat_path, metas)
             else:
                 print(f"\nConcatenated file already exists: {dat_path}")
 
@@ -186,6 +220,7 @@ def main():
         print(f"Running Kilosort4 on session: {session_name}")
         print(f"Input file : {dat_path}")
         print(f"Output dir : {output_dir}")
+        print(f"fs={fs} Hz, n_channels={n_channels}")
         print("----------")
 
         try:
@@ -193,7 +228,8 @@ def main():
                 dat_path=dat_path,
                 output_dir=output_dir,
                 probe_path=probe_path,
-                fs=25000,
+                fs=fs,
+                n_chan_bin=n_channels,
             )
         except Exception as e:
             print(f"\nFailed on session {session_name}")
