@@ -120,7 +120,7 @@ def concatenate_dat_files(dat_group, concat_path, metas):
             # Shift this recording's events by its start time in the concat file
             offset_sec = sample_offset / fs
             for ch, timestamps in meta['events'].items():
-                shifted = np.array(timestamps, dtype=float) + offset_sec
+                shifted = np.array(timestamps, dtype=float).ravel() + offset_sec
                 if ch not in combined_events:
                     combined_events[ch] = []
                 combined_events[ch].append(shifted)
@@ -131,7 +131,7 @@ def concatenate_dat_files(dat_group, concat_path, metas):
             sample_offset += n_samples
 
     for ch in combined_events:
-        combined_events[ch] = np.vstack(combined_events[ch])
+        combined_events[ch] = np.concatenate(combined_events[ch])
 
     # Save JSON manifest
     meta_path = concat_path.with_suffix(".json")
