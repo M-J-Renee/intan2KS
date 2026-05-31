@@ -209,7 +209,8 @@ def main():
             concat_dir = output_root / "concatenated"
             dat_path = concat_dir / f"{session_name}.dat"
 
-            if not dat_path.exists():
+            json_path = dat_path.with_suffix(".json")
+            if not dat_path.exists() or not json_path.exists():
                 concatenate_dat_files(group, dat_path, metas)
             else:
                 print(f"\nConcatenated file already exists: {dat_path}")
