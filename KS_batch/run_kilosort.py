@@ -2,7 +2,7 @@ from pathlib import Path
 from kilosort import run_kilosort
 
 
-def run_one_recording(dat_path: Path, output_dir: Path, probe_path: Path, fs: int, n_chan_bin: int, dminx: int):
+def run_one_recording(dat_path: Path, output_dir: Path, probe_path: Path, fs: int, n_chan_bin: int, dminx: int, min_template_size: int):
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -13,6 +13,7 @@ def run_one_recording(dat_path: Path, output_dir: Path, probe_path: Path, fs: in
         "fs": fs,
         "n_chan_bin": n_chan_bin,
         "dminx": dminx,
+        "min_template_size": min_template_size,
     }
 
     print("\n==============================")
