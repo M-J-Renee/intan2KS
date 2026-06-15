@@ -231,8 +231,10 @@ def main():
                 probe_path=probe_path,
                 fs=fs,
                 n_chan_bin=n_channels,
-                dminx=100 if n_channels == 16 else 50,
+                dmin=100 if n_channels == 16 else 50,
+                dminx=0,
                 min_template_size=35 if n_channels == 16 else 25,
+                nearest_templates=n_channels,
             )
         except Exception as e:
             print(f"\nFailed on session {session_name}")
