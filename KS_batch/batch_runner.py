@@ -231,6 +231,7 @@ def main():
                 probe_path=probe_path,
                 fs=fs,
                 n_chan_bin=n_channels,
+                dminx=100 if n_channels == 16 else 50,
             )
         except Exception as e:
             print(f"\nFailed on session {session_name}")
