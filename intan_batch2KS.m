@@ -58,7 +58,7 @@ for i = 1:length(d)
 
         % save events and recording info alongside the .dat
         n_channels = size(data_int16, 2);
-        fs = info.frequency_parameters.amplifier_sample_rate;
+        fs = info.origFs;
         metaFile = fullfile(outputdir, [sessionName '_meta.mat']);
         save(metaFile, 'events', 'info', 'n_channels', 'fs');
         fprintf('Saved metadata: %s\n', metaFile);
