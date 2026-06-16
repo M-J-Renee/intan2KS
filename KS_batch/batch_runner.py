@@ -232,7 +232,7 @@ def main():
                 fs=fs,
                 n_chan_bin=n_channels,
                 dmin=100 if n_channels == 16 else 50,
-                dminx=1,
+                dminx=25 if n_channels == 32 else 50,
                 min_template_size=35 if n_channels == 16 else 25,
                 nearest_templates=n_channels,
             )
