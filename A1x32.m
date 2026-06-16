@@ -1,10 +1,15 @@
 %% 32ch_map
 
-% A1x32 neuronexus probe map for KS 
-shank_chs = [ 13 20 9 24 4 29 8 25 7 26 6 27 5 28 3 30 2 31 1 32 10 23 11 22 12 21 14 19 15 18 16 17];
- 
-kcoords_map = ones(size(shank_chs));
-xcoords_map = num2cell(zeros(size(shank_chs)));
+% A1x32 neuronexus probe map for KS
+% Data is pre-reordered to physical spatial order in intan_batch2KS.m,
+% so chanMap is sequential 1:32. ycoords reflect 50um site spacing.
 
-ycoords_chs = 1500:-50:0; 
-ycoords_map = num2cell(ycoords_chs);
+n_ch = 32;
+
+chanMap   = (1:n_ch)';
+connected = true(n_ch, 1);
+kcoords   = ones(n_ch, 1);
+xcoords   = zeros(n_ch, 1);
+ycoords   = (1550:-50:0)';   % 32 values, 50um spacing, tip=1550 base=0
+
+save('A1x32.mat', 'chanMap', 'connected', 'kcoords', 'xcoords', 'ycoords');
