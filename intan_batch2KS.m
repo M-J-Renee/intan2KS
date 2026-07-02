@@ -5,8 +5,8 @@ clc;
 
 %% path
 
-Edir = '/mnt/CL_8TB_4/temp_tank/SUBJ-ID-1075'; 
-outputdir = '/mnt/CL_8TB_4/Marissa/Aversive AM Laminar Ephys/ephys dat files/SUBJ-ID-1075';
+Edir = '/mnt/CL_4TB_2/temp_tanks/SUBJ-ID-1154'; 
+outputdir = '/mnt/CL_8TB_4/Marissa/SUBJ-ID-1154';
 
 %% load data
 

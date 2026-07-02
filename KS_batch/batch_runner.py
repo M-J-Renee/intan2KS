@@ -234,7 +234,7 @@ def main():
                 dmin=100 if n_channels == 16 else 50,
                 dminx=25 if n_channels == 32 else 50,
                 min_template_size=35 if n_channels == 16 else 25,
-                nearest_templates=n_channels,
+                nearest_templates=100,
             )
         except Exception as e:
             print(f"\nFailed on session {session_name}")
